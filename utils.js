@@ -4,12 +4,12 @@ Function.prototype.call = function (context) {
   context.fn = this;
   var args = [];
   for (var i = 1, len = arguments.length; i < len; i++) {
-    args.push('arguments[' + i + ']')
+    args.push("arguments[" + i + "]");
   }
-  var result = eval('context.fn(' + args + ')')
-  delete context.fn
+  var result = eval("context.fn(" + args + ")");
+  delete context.fn;
   return result;
-}
+};
 // es5手写apply
 Function.prototype.apply = function (context, arr) {
   var context = context || window;
@@ -17,17 +17,16 @@ Function.prototype.apply = function (context, arr) {
   var result;
   if (!arr) {
     result = context.fn();
-  }
-  else {
+  } else {
     var args = [];
     for (var i = 0, len = arr.length; i < len; i++) {
-      args.push('arr[' + i + ']');
+      args.push("arr[" + i + "]");
     }
-    result = eval('context.fn(' + args + ')')
+    result = eval("context.fn(" + args + ")");
   }
-  delete context.fn
+  delete context.fn;
   return result;
-}
+};
 
 Function.prototype.myCall = function (context = window) {
   context.fn = this;
@@ -35,19 +34,18 @@ Function.prototype.myCall = function (context = window) {
   let result = context.fn(...args);
   delete context.fn;
   return result;
-}
+};
 Function.prototype.myApply = function (context = window) {
   context.fn = this;
   let result;
   if (arguments[1]) {
     result = context.fn(...arguments[1]);
-  }
-  else {
+  } else {
     result = context.fn();
   }
   delete context.fn;
   return result;
-}
+};
 
 Function.prototype.bind = function (context) {
   // 1、返回一个函数
@@ -55,77 +53,82 @@ Function.prototype.bind = function (context) {
   // 3、bind 返回的函数作为构造函数的时候，bind 时指定的 this 值会失效，但传入的参数依然生效。
   // 4、判断传入参数类型
   if (typeof this !== "function") {
-    throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+    throw new Error(
+      "Function.prototype.bind - what is trying to be bound is not callable"
+    );
   }
   var self = this;
   var args = Array.prototype.slice.call(arguments, 1);
-  var fNOP = function () { };
+  var fNOP = function () {};
   var fBound = function () {
     var bindArgs = Array.prototype.slice.call(arguments);
-    return self.apply(this instanceof fNOP ? this : context, args.concat(bindArgs));
-  }
+    return self.apply(
+      this instanceof fNOP ? this : context,
+      args.concat(bindArgs)
+    );
+  };
   fNOP.prototype = this.prototype;
   fBound.prototype = new fNOP();
   return fBound;
-}
+};
 
 // 手写promise
-const PENDING = 'PENDING'
-const FULFILLED = 'FULFILLED'
-const REJECTED = 'REJECTED'
+const PENDING = "PENDING";
+const FULFILLED = "FULFILLED";
+const REJECTED = "REJECTED";
 class Promise {
   constructor(executor) {
-    this.status = PENDING
-    this.value = undefined
-    this.reason = undefined
+    this.status = PENDING;
+    this.value = undefined;
+    this.reason = undefined;
     // 存放成功的回调
-    this.onResolvedCallback = []
+    this.onResolvedCallback = [];
     // 存放失败的回调
-    this.onRejectedCallback = []
+    this.onRejectedCallback = [];
 
     let resolve = (value) => {
       if (this.status === PENDING) {
-        this.status = FULFILLED
-        this.value = value
+        this.status = FULFILLED;
+        this.value = value;
         // 依次将对应的函数执行
-        this.onResolvedCallback.forEach(fn => fn())
+        this.onResolvedCallback.forEach((fn) => fn());
       }
-    }
+    };
     let reject = (reason) => {
       if (this.status === PENDING) {
-        this.status = REJECTED
-        this.reason = reason
+        this.status = REJECTED;
+        this.reason = reason;
         // 依次将对应的函数执行
-        this.onRejectedCallback.map(fn => fn())
+        this.onRejectedCallback.map((fn) => fn());
       }
-    }
+    };
 
     try {
-      executor(resolve, reject)
+      executor(resolve, reject);
     } catch (error) {
-      reject(error)
+      reject(error);
     }
   }
 
   then(onFulfilled, onRejected) {
     if (this.status === FULFILLED) {
-      onFulfilled(this.value)
+      onFulfilled(this.value);
     }
 
     if (this.status === REJECTED) {
-      onRejected(this.reason)
+      onRejected(this.reason);
     }
 
     if (this.status === PENDING) {
       // 如果promise的状态是 pending，需要将 onFulfilled 和 onRejected 函数存放起来，等待状态确定后，再依次将对应的函数执行
       this.onResolvedCallback.push(() => {
-        onFulfilled(this.value)
-      })
+        onFulfilled(this.value);
+      });
 
       // 如果promise的状态是 pending，需要将 onFulfilled 和 onRejected 函数存放起来，等待状态确定后，再依次将对应的函数执行
       this.onRejectedCallback.push(() => {
-        onRejected(this.reason)
-      })
+        onRejected(this.reason);
+      });
     }
   }
 }
@@ -134,49 +137,65 @@ Promise.prototype.all = function (arr) {
   // 1、返回的是个promise对象
   // 2、把传入的promise数组全部执行，并将结果存起来
   // 3、等全部执行完以后，返回结果
-  let result = []
+  let result = [];
   return new Promise((resolve, reject) => {
     for (let i in arr) {
-      Promise.resolve(arr[i]).then(data => {
-        result[i] = data
-        if (result.length === arr.length) resolve(result)
-      }).catch(e => {
-        reject(e)
-      })
+      Promise.resolve(arr[i])
+        .then((data) => {
+          result[i] = data;
+          if (result.length === arr.length) resolve(result);
+        })
+        .catch((e) => {
+          reject(e);
+        });
     }
-  })
-}
+  });
+};
 
-// TODO Promise.prototype.race
+Promise.prototype.race = function (arr) {
+  return new Promise((resolve, reject) => {
+    for (let i in arr) {
+      Promise.resolve(arr[i])
+        .then((data) => {
+          resolve(data);
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    }
+  });
+};
 
 // 调用
 const promise = new Promise((resolve, reject) => {
   setTimeout(() => {
-    resolve('成功');
+    resolve("成功");
   }, 1000);
-}).then(data => {
-  console.log('success', data)
-}, err => {
-  console.log('faild', err)
-})
+}).then(
+  (data) => {
+    console.log("success", data);
+  },
+  (err) => {
+    console.log("faild", err);
+  }
+);
 
 // 柯里化
 // 函数科里化， 对函数的一种转换，例如：fn(a, b, c)可转化为fn(a)(b)(c)调用，本质上上一种函数转换
-
 // 简单柯里化
 function add(a, b) {
-  console.log(a + b)
+  console.log(a + b);
 }
-let adds = curry(add)
-adds(3)(4)
+let adds = curry(add);
+adds(3)(4);
 
 const easyCurry = function (fn) {
   return function (a) {
     return function (b) {
-      return fn(a, b)
-    }
-  }
-}
+      return fn(a, b);
+    };
+  };
+};
 
 // 复杂柯里化
 function sum(a, b, c) {
@@ -193,29 +212,29 @@ const curry = function (fn) {
     // 原封不动输出
     if (args.length >= fn.length) {
       // 最终还是返回fn 参数动态拼在一起
-      return fn.apply(this, args)
+      return fn.apply(this, args);
     }
     // 否则
     else {
       // 把之前的参数拼在一起去调用curried
       return function (...args2) {
-        return curried.apply(this, args.concat(args2))
-      }
+        return curried.apply(this, args.concat(args2));
+      };
     }
-  }
-}
+  };
+};
 
 // 二叉树前序遍历 last
-let result = []
+let result = [];
 function loopTree(tree) {
   if (tree) {
-    result.push(tree.value)
-    loopTree(tree.left)
-    loopTree(tree.right)
+    result.push(tree.value);
+    loopTree(tree.left);
+    loopTree(tree.right);
   }
 }
 
-// 防抖 
+// 防抖
 // 定义：在事件被触发n秒后再执行回调，如果在这n秒内又被触发，则重新计时。
 // 应用：输入框实时搜索，按钮防重复点击
 function debounce(fn, delay, immediate) {
@@ -224,16 +243,15 @@ function debounce(fn, delay, immediate) {
     if (timer) clearTimeout(timer);
     if (immediate) {
       fn.apply(this, arguments);
-    }
-    else {
+    } else {
       timer = setTimeout(() => {
         fn.apply(this, arguments);
-      }, delay)
+      }, delay);
     }
-  }
+  };
 }
 
-// 节流 
+// 节流
 // 定义：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效。
 // 摁一下，发射一个子弹。最快每秒1发，如果1秒内触发了3次，还是只会发射一发。
 // 监控浏览器resize
@@ -245,26 +263,46 @@ function throttle(fn, delay) {
       fn.apply(this, arguments);
       prev = new Date();
     }
-  }
+  };
 }
 
 // 深拷贝
 function isObject(target) {
-  return target !== null && typeof target === 'object';
+  return target !== null && typeof target === "object";
 }
+// 简易版深拷贝
 function deepClone(target) {
   // 不是对象直接返回
   if (!isObject(target)) return target;
   // 判断数组
-  let result = Array.isArray(target) ? [] : {}
-  let keys = Object.keys(target)
+  let result = Array.isArray(target) ? [] : {};//如果需要解决相同引用和循环引用，在此处前后使用map去存储和获取
+  let keys = Object.keys(target);
   // 迭代目标对象的key来递归完成复制
   for (let i = 0, len = keys.length; i < len; i++) {
-    result[keys[i]] = deepClone(target[keys[i]])
+    result[keys[i]] = deepClone(target[keys[i]]);
   }
-  return result
+  return result;
 }
 
+/**
+ * @description: 解决相同引用和循环引用的深拷贝版本
+ */
+function deepClone(target) {
+  let visitedMap = new Map();
+  function baseClone(target) {
+    if (!isObject(target)) return target;
+    // 先获取map中是否存在当前target，如果存在则直接返回
+    if (visitedMap.get(target)) return visitedMap.get(target);
+    let result = Array.isArray(target) ? [] : {};
+    visitedMap.set(target, result);
+    let keys = Object.keys(target);
+    for (let i = 0, len = keys.length; i < len; i++) {
+      result[keys[i]] = baseClone(target[keys[i]]);
+    }
+    return result;
+  }
+  return baseClone(target);
+}
 
 class EventEmitter {
   constructor() {
@@ -388,7 +426,6 @@ bubbleSort(arr);
 // 工厂模式
 // 单例模式
 
-
 // axios请求失败的时候再重试一遍
 function axiosAutoTry(data) {
   return new Promise((resolve, reject) => {
@@ -401,7 +438,7 @@ function axiosAutoTry(data) {
         if (typeof data.__try_count == "number" && data.__try_count > 0) {
           console.error("重试请求", error.message, data);
           data.__try_count--;
-          return resolve(axiosAutoTry(data))
+          return resolve(axiosAutoTry(data));
         }
         reject(error);
       });
@@ -411,22 +448,22 @@ function axiosAutoTry(data) {
 // 实现一个红绿灯
 // 红灯亮(打印)3s后，绿灯亮(打印)2s后，黄灯亮(打印)1s后循环
 function log(num) {
-  let map = ['', 'yellow', 'green', 'red']
+  let map = ["", "yellow", "green", "red"];
   return new Promise((resolve, reject) => {
-    console.log(map[num], num)
+    console.log(map[num], num);
     setTimeout(() => {
-      if (num <= 1) num = 4
-      resolve(num)
+      if (num <= 1) num = 4;
+      resolve(num);
     }, num * 1000);
-  })
+  });
 }
 function light(num) {
   num--;
   return new Promise((resolve, reject) => {
-    log(num).then(data => {
-      light(data)
-    })
-  })
+    log(num).then((data) => {
+      light(data);
+    });
+  });
 }
 
-light(4)
+light(4);
