@@ -147,6 +147,8 @@ Promise.prototype.all = function (arr) {
   })
 }
 
+// TODO Promise.prototype.race
+
 // 调用
 const promise = new Promise((resolve, reject) => {
   setTimeout(() => {
@@ -379,6 +381,12 @@ function bubbleSort(arr) {
 }
 let arr = [5, 4, 3, 2, 1];
 bubbleSort(arr);
+
+// 插入排序
+// 快速排序
+// 设计模式
+// 工厂模式
+// 单例模式
 
 
 // axios请求失败的时候再重试一遍
