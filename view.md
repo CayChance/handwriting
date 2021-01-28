@@ -1,3 +1,35 @@
+### webpack构建速度优化有哪些方式
+- 分析打包速度和体积，合理进行优化
+  1. 使用SMP(speed-measure-webpack-plugin) 速度分析
+  2. webpack-bundle-analyzer 体积分析
+- 打包速度：
+  - 多进程，多实例构建 
+    1. thread-loader(将模块以及依赖分配给worker线程中)
+    2. happypack(不建议对loader使用)
+    3. parallel-webpack(可并行运行多个Webpack构建)
+  - 缩小打包作用域
+    1. exclude/include (确定 loader 规则范围，babel-loader不去解析node_modules)
+    2. resolve.modules 指明第三方模块的绝对路径 (减少不必要的查找)
+    3. resolve.extensions 尽可能减少后缀尝试的可能性
+    4. noParse 忽略不需要解析的库 Jquery, loadsh
+  - 利用缓存提升速率
+    1. babel-loader开启缓存
+    2. 使用cache-loader等
+  - 开启DLL
+    1. 分包。使用DllPlugin进行分包，能把第三方库代码分离开，每次文件更改的时候，它只会打包该项目自身的代码。合理使用manifest.json文件
+    2. 减少对不频繁更新的库的编译。使用 DllPlugin 将不频繁更新的库进行编译以后，当这些依赖的版本没有变化时，就不需要重新编译
+
+- 打包体积优化
+  - 压缩代码
+    1. webpack-parallel-uglify-plugin
+    2. uglify-webpack-plugin
+    3. terser-webpack-plugin
+  - 图片压缩
+    1. image-webpack-loader
+  - Tree shaking 抖动树，尽可能的避免打入无用代码，可在package中配置告诉webpack安全的删除未用到的export
+    1. 实际情况中，虽然依赖了某个模块，但其实只使用其中的某些功能。通过 tree-shaking，将没有使用的模块摇掉，这样来达到删除无用代码的目的。
+  - 提取公共资源
+
 ### 性能优化方案
 
 ##### 合理设置api，减少请求数
@@ -383,27 +415,6 @@ newCh已经遍历完了，但是oldCh还没有，把oldCh中oldStartIdx-oldEndId
 loaders是在打包构建过程中用来处理源文件的(JSX,Scss,Less)，一次处理一个；
 - plugin
 plugins并不直接操作单个文件，它直接对整个构建过程起作用。
-
-### webpack构建速度优化有哪些方式
-- 打包速度：
-  - 多线程构建使用thread-loader
-  - 缩小打包作用域
-    - exclude/include (确定 loader 规则范围)
-    - resolve.modules 指明第三方模块的绝对路径 (减少不必要的查找)
-    - resolve.extensions 尽可能减少后缀尝试的可能性
-    - noParse 对完全不需要解析的库进行忽略，使用script引用的
-  - 利用缓存提升速率
-    - babel-loader缓存
-    - 代码压缩缓存
-    - 使用cache-loader等
-  - 开启DLL
-    - 使用DllPlugin插件分包，合理使用manifest.json文件
-- 打包体积优化
-  - 压缩代码
-  - 提取公共资源
-  - Tree shaking 抖动树，尽可能的避免打入无用代码，可在package中配置告诉webpack安全的删除未用到的export
-  - 图片压缩
-- 使用SMP来观察打包速度和体积，合理进行优化
 
 ## 浏览器及安全
 
