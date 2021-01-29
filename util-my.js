@@ -184,7 +184,7 @@ function isObject(target) {
 }
 
 function baseClone(target) {
-  if (!isObject) return target
+  if (!isObject(target)) return target
   let result = Array.isArray(target) ? [] : {}
   let keys = Object.keys(target)
   for (let i, len = keys.length; i < len; i++) {

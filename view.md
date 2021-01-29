@@ -21,6 +21,8 @@
 
 - 打包体积优化
   - 压缩代码
+    1. Gzip压缩
+    2. 压缩
     1. webpack-parallel-uglify-plugin
     2. uglify-webpack-plugin
     3. terser-webpack-plugin
@@ -29,6 +31,7 @@
   - Tree shaking 抖动树，尽可能的避免打入无用代码，可在package中配置告诉webpack安全的删除未用到的export
     1. 实际情况中，虽然依赖了某个模块，但其实只使用其中的某些功能。通过 tree-shaking，将没有使用的模块摇掉，这样来达到删除无用代码的目的。
   - 提取公共资源
+    1. CommonsChunkPlugin  字段name和minChunks
 
 ### 性能优化方案
 
