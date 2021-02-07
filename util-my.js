@@ -187,7 +187,7 @@ function baseClone(target) {
   if (!isObject(target)) return target
   let result = Array.isArray(target) ? [] : {}
   let keys = Object.keys(target)
-  for (let i, len = keys.length; i < len; i++) {
+  for (let i = 0, len = keys.length; i < len; i++) {
     let key = keys[i]
     result[key] = baseClone(target[key])
   }
@@ -210,30 +210,6 @@ function deepClone(target) {
   }
   return baseClone(target)
 }
-
-function bubble(arr) {
-  for (let i = 0, len = arr.length; i < len - 1; i++) {
-    for (let j = 0; j < len - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
-      }
-    }
-  }
-  return arr
-}
-
-function quick(arr) {
-  if (arr.length <= 1) return arr
-  let midIndex = parseInt(arr.length / 2)
-  let midValue = arr.splice(midIndex, 1)[0]
-  let leftArr = []
-  let rightArr = []
-  for (let i = 0, len = arr.length; i < len; i++) {
-    arr[i] < midValue ? leftArr.push(arr[i]) : rightArr.push(arr[i])
-  }
-  return quick(leftArr).concat(midValue, quick(rightArr))
-}
-
 class EventEmitter {
   constructor() {
     this.listener = {}
@@ -271,4 +247,27 @@ class EventEmitter {
       delete this.listener[key]
     }
   }
+}
+
+function bubble(arr) {
+  for (let i = 0, len = arr.length; i < len - 1; i++) {
+    for (let j = 0; j < len - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]]
+      }
+    }
+  }
+  return arr
+}
+
+function quick(arr) {
+  if (arr.length <= 1) return arr
+  let midIndex = parseInt(arr.length / 2)
+  let midValue = arr.splice(midIndex, 1)[0]
+  let leftArr = []
+  let rightArr = []
+  for (let i = 0, len = arr.length; i < len; i++) {
+    arr[i] < midValue ? leftArr.push(arr[i]) : rightArr.push(arr[i])
+  }
+  return quick(leftArr).concat(midValue, quick(rightArr))
 }

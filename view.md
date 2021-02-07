@@ -23,9 +23,9 @@
   - 压缩代码
     1. Gzip压缩
     2. 压缩
-    1. webpack-parallel-uglify-plugin
-    2. uglify-webpack-plugin
-    3. terser-webpack-plugin
+    3. webpack-parallel-uglify-plugin
+    4. uglify-webpack-plugin
+    5. terser-webpack-plugin
   - 图片压缩
     1. image-webpack-loader
   - Tree shaking 抖动树，尽可能的避免打入无用代码，可在package中配置告诉webpack安全的删除未用到的export
