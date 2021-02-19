@@ -31,11 +31,11 @@ Function.prototype.apply = function (ctx, arr) {
 
 Function.prototype.bind = function (ctx) {
   var self = this
-  var args1 = Array.prototype.splice.call(arguments, 1)
+  var args1 = Array.prototype.slice.call(arguments, 1)
   var fnNop = function () { }
   var fnBound = function () {
-    var args2 = Array.prototype.splice.call(arguments)
-    self.apply(this instanceof fnNop ? this : ctx, args1.concat(args2))
+    var args2 = Array.prototype.slice.call(arguments)
+    return self.apply(this instanceof fnNop ? this : ctx, args1.concat(args2))
   }
   fnNop.prototype = this.prototype
   fnBound.prototype = new fnNop()

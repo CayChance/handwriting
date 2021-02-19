@@ -39,7 +39,7 @@ Function.prototype.bind = function (ctx) {
   var fnNop = function () { }
   var fnBound = function () {
     var boundArgs = Array.prototype.slice.call(arguments)
-    self.apply(this instanceof fnNop ? this : ctx, args.concat(boundArgs))
+    return self.apply(this instanceof fnNop ? this : ctx, args.concat(boundArgs))
   }
   fnNop.prototype = this.prototype
   fnBound.prototype = new fnNop()
