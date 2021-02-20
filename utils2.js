@@ -243,4 +243,15 @@ function bubbleSort(arr) {
   }
   return arr
 }
-// bubble quick
+
+function quick(arr) {
+  if (arr.length <= 1) return arr
+  let midIndex = parseInt(arr.length / 2)
+  let midValue = arr.splice(midIndex, 1)[0]
+  let leftArr = []
+  let rightArr = []
+  for (let i = 0, len = arr.length; i < len; i++) {
+    arr[i] < midValue ? leftArr.push(arr[i]) : rightArr.push(arr[i])
+  }
+  return quick(leftArr).concat(midValue, quick(rightArr))
+}
