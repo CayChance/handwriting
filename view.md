@@ -1,3 +1,15 @@
+### 前端架构如何设计
+- 一般分成项目层面的、标准化方面的、自动集成层面的
+- 项目层面，用脚手架构建基本的开发目录，也就是src下，你还要重新划分这么几个目录：pages、components、store、utils、services、assets、styles。
+- 标准化方面，可以从eslint、stylelint、git hooks、编辑器支持、等等方面着手，让代码更规范，甚至引入code review等等。
+- 自动集成层面利用gitlab等工具，做自动化集成，部署等等。gitlab作为仓库，Jenkins作为发布平台。直接做那种自动push代码，自动发布功能。
+
+### 前端提效
+- 自动化部署平台
+- 高效脚手架工具研发
+- 组件库建设
+- 自动化测试工具研发
+
 ### webpack构建速度优化有哪些方式
 - 分析打包速度和体积，合理进行优化
   1. 使用SMP(speed-measure-webpack-plugin) 速度分析
