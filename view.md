@@ -275,8 +275,7 @@ console.log(8);
 
 ### Vue双向绑定实现原理/数据响应系统原理
 
-[vue原理。
-](https://caychance.github.io/posts/vue%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E7%AC%94%E8%AE%B0/)
+[vue原理。](https://caychance.github.io/posts/vue%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%E7%AC%94%E8%AE%B0/)
 
 * 响应式对象，核心就是利用 Object.defineProperty 给数据添加了 getter 和 setter，目的就是为了在我们访问数据以及写数据的时候能自动执行一些逻辑：getter 做的事情是依赖收集，setter 做的事情是派发更新
 
